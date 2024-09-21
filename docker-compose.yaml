@@ -8,6 +8,10 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./src:/var/www/laravel
+    depends_on:
+      - php
+    networks:
+      - laravel
 
   php:
     build:
@@ -15,13 +19,34 @@ services:
       dockerfile: php.dockerfile
     volumes:
       - ./src:/var/www/laravel
+    depends_on:
+      - postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "php-fpm -t || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=laravel_db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+    networks:
+      - laravel
+
 
   postgres:
-    image: postgres:16-alpine
+    image: "postgres:16-alpine"
     ports:
       - "5432:5432"
     env_file:
       - env/postgres.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - laravel
 
   composer:
     build:
@@ -32,6 +57,9 @@ services:
     environment:
       - COMPOSER_MEMORY_LIMIT=-1
       - COMPOSER_PROCESS_TIMEOUT=0
+    command: ["create-project", "laravel/laravel", "."]
+    networks:
+      - laravel
 
   artisan:
     build:
@@ -39,3 +67,15 @@ services:
       dockerfile: php.dockerfile
     volumes:
       - ./src:/var/www/laravel
+    depends_on:
+      - postgres
+      - php
+    networks:
+      - laravel
+
+volumes:
+  db_data:
+
+networks:
+  laravel:
+    driver: bridge
