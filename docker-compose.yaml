@@ -76,6 +76,15 @@ services:
     networks:
       - laravel
 
+  node:
+    image: node:20-alpine
+    working_dir: /var/www/laravel
+    volumes:
+      - ./src:/var/www/laravel
+    command: sh -c "npm install && npm run dev"
+    networks:
+      - laravel
+
 volumes:
   db_data:
 
