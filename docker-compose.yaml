@@ -20,6 +20,8 @@ services:
       - "5432:5432"
     env_file:
       - env/postgres.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   composer:
     build:
@@ -31,3 +33,14 @@ services:
       - COMPOSER_MEMORY_LIMIT=-1
       - COMPOSER_PROCESS_TIMEOUT=0
     command: ["create-project", "laravel/laravel", "."]
+
+  artisan:
+    build:
+      context: dockerfiles
+      dockerfile: php.dockerfile
+    volumes:
+      - ./src:/var/www/laravel
+    entrypoint: ["php", "/var/www/laravel/artisan"]
+
+volumes:
+  pgdata:

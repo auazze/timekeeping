@@ -226,6 +226,7 @@
       <path value="$PROJECT_DIR$/src/vendor/symfony/uid" />
       <path value="$PROJECT_DIR$/src/vendor/theseer/tokenizer" />
       <path value="$PROJECT_DIR$/src/vendor/symfony/yaml" />
+      <path value="$PROJECT_DIR$/src/vendor/laravel/pail" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
