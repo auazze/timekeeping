@@ -21,7 +21,7 @@ services:
     env_file:
       - env/postgres.env
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data # можно сделать bind mount - ./pgdata:/var/lib/postgresql/data ,а не именованный том, требующий привязку в конце volumes: и (название) pgdata: но это добро будет требовать настройки прав доступа, с чем мы на Windows точно заморачиваться не будем
 
   composer:
     build:
